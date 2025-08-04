@@ -18,12 +18,14 @@ def main():
     drawable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
     buff_attackspeed_asteroids = pygame.sprite.Group()
+    buff_doublepoints_asteroids = pygame.sprite.Group()
     shots = pygame.sprite.Group()
     Shot.containers = (shots,updatable,drawable)
     Asteroid.containers = (asteroids,updatable,drawable)
     Player.containers = (updatable,drawable)
     AsteroidField.containers = (updatable)
     Buff_attackspeed_Asteroid.containers = (buff_attackspeed_asteroids,updatable,drawable)
+    Buff_doublepoints_Asteroid.containers = (buff_doublepoints_asteroids,updatable,drawable)
     asteroid_field = AsteroidField() 
 
     # set variables
@@ -110,20 +112,36 @@ def main():
                 if each_shot.collision_check(each_asteroid) == True:
                     each_shot.kill()
                     if each_asteroid.radius == ASTEROID_MIN_RADIUS:
-                        score += 300
+                        if player.doublepoints_buff_active == True:
+                            score += 600                                                 
+                        else:
+                            score += 300
                     elif each_asteroid.radius == ASTEROID_MIN_RADIUS * 2:
-                        score += 200
+                        if player.doublepoints_buff_active == True:
+                            score += 400
+                        else:
+                            score += 200
                     else:
-                        score += 100
+                        if player.doublepoints_buff_active == True:
+                            score += 200
+                        else:
+                            score += 100
                     each_asteroid.split(asteroids)
+                    
 
-        for each_attackspeed_asteroid in buff_attackspeed_asteroids:
-            if player.collision_check(each_attackspeed_asteroid) == True:
-                    each_attackspeed_asteroid.kill()
-                    print("2x Firerate for 5 Seconds!")
-                    player.buff_timer = BUFF_ATTACKSPEED_LENGTH
+        for each_asteroid in buff_attackspeed_asteroids:
+            if player.collision_check(each_asteroid) == True:
+                    each_asteroid.kill()
+                    print("Fire Away!")
+                    player.attackspeed_buff_active = True
+                    player.gatling_buff_active = True
+
+        for each_asteroid in buff_doublepoints_asteroids:
+            if player.collision_check(each_asteroid) == True:
+                    each_asteroid.kill()
+                    print("Double Points!")
+                    player.doublepoints_buff_active = True
             
-
 
                     
         # draw everything
